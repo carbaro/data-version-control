@@ -14,3 +14,11 @@ stages:
     - src/train.py
     outs:
     - model/model.joblib
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - model/model.joblib
+    - src/evaluate.py
+    metrics:
+    - metrics/accuracy.json:
+        cache: false
