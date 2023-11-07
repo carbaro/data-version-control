@@ -6,7 +6,7 @@ stages:
     - src/prepare.py
     outs:
     - data/prepared/train.csv
-    - data/prepared/val.csv
+    - data/prepared/test.csv
   train:
     cmd: python src/train.py
     deps:
