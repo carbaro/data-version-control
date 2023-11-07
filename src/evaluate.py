@@ -2,6 +2,8 @@ from joblib import load
 import json
 from pathlib import Path
 
+from dvclive import Live
+
 from sklearn.metrics import accuracy_score
 
 from train import load_data
@@ -14,6 +16,8 @@ def main(repo_path):
     predictions = model.predict(test_data)
     accuracy = accuracy_score(labels, predictions)
     metrics = {"accuracy": accuracy}
+    with Live(save_dvc_exp=True) as live:
+        live.log_metric("accuracy", metrics['accuracy'])
     accuracy_path = repo_path / "metrics/accuracy.json"
     accuracy_path.write_text(json.dumps(metrics))
 

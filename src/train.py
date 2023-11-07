@@ -1,11 +1,17 @@
 from joblib import dump
 from pathlib import Path
 
+from dvclive import Live
+import yaml
+
 import numpy as np
 import pandas as pd
 from skimage.io import imread_collection
 from skimage.transform import resize
 from sklearn.linear_model import SGDClassifier
+
+ROOT = Path('../')
+PARAMS = ROOT / 'src' / 'params.yaml'
 
 
 def load_images(data_frame, column_name):
@@ -37,9 +43,20 @@ def load_data(data_path):
 def main(repo_path):
     train_csv_path = repo_path / "data/prepared/train.csv"
     train_data, labels = load_data(train_csv_path)
-    sgd = SGDClassifier(max_iter=10)
-    trained_model = sgd.fit(train_data, labels)
-    dump(trained_model, repo_path / "model/model.joblib")
+    with open(PARAMS, 'r') as params_yaml:
+        try:
+            params = yaml.safe_load()
+        except yaml.YAMLError as e:
+            print(e)
+    with Live(save_dvc_exp=True) as live:
+        live.log_param("model", params['MODEL'])
+        live.log_param("epochs", params['EPOCHS'])
+        if params['MODEL'] == 'SGD':
+            sgd = SGDClassifier(max_iter=params['EPOCHS'])
+            trained_model = sgd.fit(train_data, labels)
+        out_model_path = repo_path / "model/model.joblib"
+        dump(trained_model, out_model_path)
+        live.log_artifact(out_model_path, type="model", name=f'{params["MODEL"]}_{params["EPOCHS"]}_epochs')
 
 
 if __name__ == "__main__":
