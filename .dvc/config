@@ -1,0 +1,5 @@
+[core]
+    remote = pseudoremote
+    autostage = true
+['remote "pseudoremote"']
+    url = F:\data\dvc\dvc_remote_realpy

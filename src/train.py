@@ -10,9 +10,6 @@ from skimage.io import imread_collection
 from skimage.transform import resize
 from sklearn.linear_model import SGDClassifier
 
-ROOT = Path('../')
-PARAMS = ROOT / 'src' / 'params.yaml'
-
 
 def load_images(data_frame, column_name):
     filelist = data_frame[column_name].to_list()
@@ -45,7 +42,7 @@ def main(repo_path):
     train_data, labels = load_data(train_csv_path)
     with open(PARAMS, 'r') as params_yaml:
         try:
-            params = yaml.safe_load()
+            params = yaml.safe_load(params_yaml)
         except yaml.YAMLError as e:
             print(e)
     with Live(save_dvc_exp=True) as live:
@@ -61,4 +58,6 @@ def main(repo_path):
 
 if __name__ == "__main__":
     repo_path = Path(__file__).parent.parent
+    ROOT = repo_path
+    PARAMS = ROOT / 'src' / 'params.yaml'
     main(repo_path)

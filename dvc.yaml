@@ -22,3 +22,12 @@ stages:
     metrics:
     - metrics/accuracy.json:
         cache: false
+artifacts:
+  SGD_100_epochs:
+    path: model/model.joblib
+    type: model
+metrics:
+- dvclive/metrics.json
+plots:
+- dvclive/plots/metrics:
+    x: step
